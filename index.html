@@ -39,20 +39,72 @@
     <script src="js/libs/jquery.min.js"></script>
     <script src="js/libs/sparks.js"></script>
     <script src="js/libs/tween.js"></script>
-    <script src="js/libs/CanvasShaders.js"></script>
 
     <script src="js/libs/TrackballControls.js"></script>
+
+     <script src="js/shaders/CopyShader.js"></script>
+    <script src="js/shaders/FilmShader.js"></script>
+    <script src="js/shaders/FocusShader.js"></script>
+    <script src="js/shaders/HorizontalBlurShader.js"></script>
+    <script src="js/shaders/TriangleBlurShader.js"></script>
+    <script src="js/shaders/VerticalBlurShader.js"></script>
+
+    <script src="js/postprocessing/EffectComposer.js"></script>
+    <script src="js/postprocessing/RenderPass.js"></script>
+    <script src="js/postprocessing/ShaderPass.js"></script>
+    <script src="js/postprocessing/MaskPass.js"></script>
+    <script src="js/postprocessing/BloomPass.js"></script>
+    <script src="js/postprocessing/FilmPass.js"></script>
+    <script src="js/libs/helvetiker_regular.typeface.js"></script>
 
     <script src="js/libs/stats.min.js"></script>
     <script src="js/World.js"></script>
     <script src="js/Contributor.js"></script>
     <script src="js/IpMapper.js"></script>
     <script src="js/JobBunch.js"></script>
+    <script src="js/ParticleWorld.js"></script>
+
+
+
+    <script type="x-shader/x-vertex" id="vertexshader">
+
+      attribute float size;
+      attribute vec3 pcolor;
+
+      varying vec3 vColor;
+
+      void main() {
+
+        vColor = pcolor;
+
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+        gl_PointSize = size * ( 200.0 / length( mvPosition.xyz ) );
+
+        gl_Position = projectionMatrix * mvPosition;
+
+      }
+
+    </script>
+
+    <script type="x-shader/x-fragment" id="fragmentshader">
+
+      uniform sampler2D texture;
+
+      varying vec3 vColor;
+
+      void main() {
+
+        vec4 outColor = texture2D( texture, gl_PointCoord );
+
+        gl_FragColor = outColor * vec4( vColor, 1.0 );
+
+      }
+
+    </script>
 
     <script>
-      var world = new World();
-      world.initialize();
-      world.animate();
+      var particleWorld = new ParticleWorld();
 
     </script>
 
