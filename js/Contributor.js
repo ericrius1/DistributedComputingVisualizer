@@ -13,7 +13,7 @@ var Contributor = function(options) {
 
   if (this.options.isSelf) {
     this.color = new THREE.Color(0x0000ff);
-    ipMapper.getPosition("me");
+    //ipMapper.getPosition("me");
     this.rotation = new THREE.Vector3(Math.PI * 2, Math.PI * 2, Math.PI * 2);
     this.scale.multiplyScalar(5);
     camera.position.x = this.position.x;
