@@ -13,8 +13,9 @@ World.prototype.initialize = function() {
 
   container = document.getElementById("container");
 
-  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-  camera.position.z = 1000;
+  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100000);
+
+
 
   controls = new THREE.TrackballControls(camera);
   controls.rotateSpeed = 1.0;
@@ -83,6 +84,9 @@ World.prototype.onMouseMove = function(e) {
 
   mouse.x = e.clientX;
   mouse.y = e.clientY;
+
+  console.log("rotation",camera.rotation);
+  console.log("position",camera.position);
 
 }
 
