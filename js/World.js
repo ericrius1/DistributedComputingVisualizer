@@ -1,14 +1,17 @@
-pickingData = [],
-objects = [];
+var World = function() {
+
+  pickingData = [],
+  objects = [];
+  this.numContributors = 10;
+  self = this;
 
 
-mouse = new THREE.Vector2();
-offset = new THREE.Vector3(10, 10, 10);
+  mouse = new THREE.Vector2();
+  offset = new THREE.Vector3(10, 10, 10);
 
-init();
-animate();
+};
 
-function init() {
+World.prototype.init = function() {
 
   container = document.getElementById("container");
 
@@ -47,7 +50,7 @@ function init() {
       vertexColors: THREE.VertexColors
     });
 
-  function applyVertexColors(g, c) {
+  World.prototype.applyVertexColors = function(g, c) {
 
     g.faces.forEach(function(f) {
 
@@ -62,8 +65,7 @@ function init() {
     });
 
   }
-
-  for (var i = 0; i < 1000; i++) {
+  for (var i = 0; i < this.numContributors; i++) {
 
     var position = new THREE.Vector3();
 
@@ -87,7 +89,7 @@ function init() {
 
     var geom = new THREE.CubeGeometry(1, 1, 1);
     var color = new THREE.Color(0xff00ff << 16);
-    applyVertexColors(geom, color);
+    this.applyVertexColors(geom, color);
 
     var cube = new THREE.Mesh(geom);
     cube.position.copy(position);
@@ -100,7 +102,7 @@ function init() {
 
     var pickingGeom = new THREE.CubeGeometry(1, 1, 1);
     var pickingColor = new THREE.Color(i);
-    applyVertexColors(pickingGeom, pickingColor);
+    this.applyVertexColors(pickingGeom, pickingColor);
 
     var pickingCube = new THREE.Mesh(pickingGeom);
     pickingCube.position.copy(position);
@@ -145,33 +147,35 @@ function init() {
   stats.domElement.style.top = '0px';
   container.appendChild(stats.domElement);
 
-  renderer.domElement.addEventListener('mousemove', onMouseMove);
+  renderer.domElement.addEventListener('mousemove', this.onMouseMove);
 
 }
 
-function onMouseMove(e) {
+World.prototype.onMouseMove = function(e) {
 
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 
 }
 
-function animate() {
+World.prototype.animate = function() {
+  that = this;
+  requestAnimationFrame(function(){
+    that.animate();
+  });
 
-  requestAnimationFrame(animate);
-
-  render();
+  this.render();
   stats.update();
 
 }
 
-function pick() {
+World.prototype.pick = function() {
 
   //render the picking scene off-screen
 
   renderer.render(pickingScene, camera, pickingTexture);
 
-  var gl = self.renderer.getContext();
+  var gl = renderer.getContext();
 
   //read the pixel under the mouse from the texture
 
@@ -202,9 +206,8 @@ function pick() {
 
 }
 
-function render() {
+World.prototype.render = function() {
   controls.update();
-  pick();
+  this.pick();
   renderer.render(scene, camera);
-
-}
+};
