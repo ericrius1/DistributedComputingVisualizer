@@ -144,10 +144,11 @@ World.prototype.pick = function() {
 }
 
 World.prototype.addContributors = function() {
-  //Create contributors. Location and such can be pulled in from
+  //Create contributors. Location and such can be pulled in from firebase
   for (var i = 0; i < this.numContributors; i++) {
+    var contributor = new Contributor();
 
-    var position = new THREE.Vector3();
+    var position = contributor.getPosition();
 
     position.x = Math.random() * 10000 - 5000;
     position.y = Math.random() * 6000 - 3000;
