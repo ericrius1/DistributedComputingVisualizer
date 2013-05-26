@@ -2,7 +2,7 @@ var World = function() {
 
   pickingData = [],
   objects = [];
-  this.numContributors = 100;
+  this.numContributors = 50;
 
   mouse = new THREE.Vector2();
   offset = new THREE.Vector3(10, 10, 10);
@@ -49,7 +49,9 @@ World.prototype.initialize = function() {
     vertexColors: THREE.VertexColors
   });
 
+  //ADD CONTRIBUTORS
   this.addContributors();
+
   var drawnObject = new THREE.Mesh(this.geometry, defaultMaterial);
   scene.add(drawnObject);
 
@@ -84,9 +86,8 @@ World.prototype.onMouseMove = function(e) {
 
   mouse.x = e.clientX;
   mouse.y = e.clientY;
+  console.log("camer rotation", camera.rotation);
 
-  console.log("rotation",camera.rotation);
-  console.log("position",camera.position);
 
 }
 
@@ -125,7 +126,6 @@ World.prototype.pick = function() {
       highlightBox.position.copy(data.position);
       highlightBox.rotation.copy(data.rotation);
       highlightBox.scale.copy(data.scale).add(offset);
-      console.log(data.position);
       highlightBox.visible = true;
     }
   } else {
