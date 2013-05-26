@@ -3,8 +3,6 @@ var World = function() {
   pickingData = [],
   objects = [];
   this.numContributors = 10;
-  self = this;
-
 
   mouse = new THREE.Vector2();
   offset = new THREE.Vector3(10, 10, 10);
@@ -39,7 +37,7 @@ World.prototype.init = function() {
   light.position.set(0, 500, 2000);
   scene.add(light);
 
-  var geometry = new THREE.Geometry(),
+  this.geometry = new THREE.Geometry(),
     pickingGeometry = new THREE.Geometry(),
     pickingMaterial = new THREE.MeshBasicMaterial({
       vertexColors: THREE.VertexColors
@@ -65,63 +63,8 @@ World.prototype.init = function() {
     });
 
   }
-  for (var i = 0; i < this.numContributors; i++) {
-
-    var position = new THREE.Vector3();
-
-    position.x = Math.random() * 10000 - 5000;
-    position.y = Math.random() * 6000 - 3000;
-    position.z = Math.random() * 8000 - 4000;
-
-    var rotation = new THREE.Vector3();
-
-    rotation.x = Math.random() * 2 * Math.PI;
-    rotation.y = Math.random() * 2 * Math.PI;
-    rotation.z = Math.random() * 2 * Math.PI;
-
-    var scale = new THREE.Vector3();
-
-    scale.x = Math.random() * 200 + 100;
-    scale.y = Math.random() * 200 + 100;
-    scale.z = Math.random() * 200 + 100;
-
-    // give the geom's vertices a random color, to be displayed
-
-    var geom = new THREE.CubeGeometry(1, 1, 1);
-    var color = new THREE.Color(0xff00ff << 16);
-    this.applyVertexColors(geom, color);
-
-    var cube = new THREE.Mesh(geom);
-    cube.position.copy(position);
-    cube.rotation.copy(rotation);
-    cube.scale.copy(scale);
-
-    THREE.GeometryUtils.merge(geometry, cube);
-
-    //give the pickingGeom's vertices a color corresponding to the "id"
-
-    var pickingGeom = new THREE.CubeGeometry(1, 1, 1);
-    var pickingColor = new THREE.Color(i);
-    this.applyVertexColors(pickingGeom, pickingColor);
-
-    var pickingCube = new THREE.Mesh(pickingGeom);
-    pickingCube.position.copy(position);
-    pickingCube.rotation.copy(rotation);
-    pickingCube.scale.copy(scale);
-
-    THREE.GeometryUtils.merge(pickingGeometry, pickingCube);
-
-    pickingData[i] = {
-
-      position: position,
-      rotation: rotation,
-      scale: scale
-
-    };
-
-  }
-
-  var drawnObject = new THREE.Mesh(geometry, defaultMaterial);
+  this.addContributors();
+  var drawnObject = new THREE.Mesh(this.geometry, defaultMaterial);
   scene.add(drawnObject);
 
   pickingScene.add(new THREE.Mesh(pickingGeometry, pickingMaterial));
@@ -160,7 +103,7 @@ World.prototype.onMouseMove = function(e) {
 
 World.prototype.animate = function() {
   that = this;
-  requestAnimationFrame(function(){
+  requestAnimationFrame(function() {
     that.animate();
   });
 
@@ -183,12 +126,9 @@ World.prototype.pick = function() {
   gl.readPixels(mouse.x, pickingTexture.height - mouse.y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelBuffer);
 
   //interpret the pixel as an ID
-
   var id = (pixelBuffer[0] << 16) | (pixelBuffer[1] << 8) | (pixelBuffer[2]);
   var data = pickingData[id];
-
   if (data) {
-
     //move our highlightBox so that it surrounds the picked object
 
     if (data.position && data.rotation && data.scale) {
@@ -199,11 +139,64 @@ World.prototype.pick = function() {
       highlightBox.visible = true;
     }
   } else {
-
     highlightBox.visible = false;
-
   }
+}
 
+World.prototype.addContributors = function() {
+  //Create contributors. Location and such can be pulled in from
+  for (var i = 0; i < this.numContributors; i++) {
+
+    var position = new THREE.Vector3();
+
+    position.x = Math.random() * 10000 - 5000;
+    position.y = Math.random() * 6000 - 3000;
+    position.z = Math.random() * 8000 - 4000;
+
+    var rotation = new THREE.Vector3();
+
+    rotation.x = Math.random() * 2 * Math.PI;
+    rotation.y = Math.random() * 2 * Math.PI;
+    rotation.z = Math.random() * 2 * Math.PI;
+
+    var scale = new THREE.Vector3();
+
+    scale.x = Math.random() * 200 + 100;
+    scale.y = Math.random() * 200 + 100;
+    scale.z = Math.random() * 200 + 100;
+
+    // give the geom's vertices a random color, to be displayed
+
+    var geom = new THREE.CubeGeometry(1, 1, 1);
+    var color = new THREE.Color(0xff00ff << 16);
+    this.applyVertexColors(geom, color);
+
+    var cube = new THREE.Mesh(geom);
+    cube.position.copy(position);
+    cube.rotation.copy(rotation);
+    cube.scale.copy(scale);
+
+    THREE.GeometryUtils.merge(this.geometry, cube);
+
+    //give the pickingGeom's vertices a color corresponding to the "id"
+
+    var pickingGeom = new THREE.CubeGeometry(1, 1, 1);
+    var pickingColor = new THREE.Color(i);
+    this.applyVertexColors(pickingGeom, pickingColor);
+
+    var pickingCube = new THREE.Mesh(pickingGeom);
+    pickingCube.position.copy(position);
+    pickingCube.rotation.copy(rotation);
+    pickingCube.scale.copy(scale);
+
+    THREE.GeometryUtils.merge(pickingGeometry, pickingCube);
+
+    pickingData[i] = {
+      position: position,
+      rotation: rotation,
+      scale: scale
+    };
+  }
 }
 
 World.prototype.render = function() {
