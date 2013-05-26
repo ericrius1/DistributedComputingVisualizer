@@ -2,14 +2,14 @@ var World = function() {
 
   pickingData = [],
   objects = [];
-  this.numContributors = 10;
+  this.numContributors = 100;
 
   mouse = new THREE.Vector2();
   offset = new THREE.Vector3(10, 10, 10);
 
 };
 
-World.prototype.init = function() {
+World.prototype.initialize = function() {
 
   container = document.getElementById("container");
 
@@ -38,31 +38,16 @@ World.prototype.init = function() {
   scene.add(light);
 
   this.geometry = new THREE.Geometry(),
-    pickingGeometry = new THREE.Geometry(),
-    pickingMaterial = new THREE.MeshBasicMaterial({
-      vertexColors: THREE.VertexColors
-    }),
-    defaultMaterial = new THREE.MeshLambertMaterial({
-      color: 0xffffff,
-      shading: THREE.FlatShading,
-      vertexColors: THREE.VertexColors
-    });
+  pickingGeometry = new THREE.Geometry(),
+  pickingMaterial = new THREE.MeshBasicMaterial({
+    vertexColors: THREE.VertexColors
+  }),
+  defaultMaterial = new THREE.MeshLambertMaterial({
+    color: 0xffffff,
+    shading: THREE.FlatShading,
+    vertexColors: THREE.VertexColors
+  });
 
-  World.prototype.applyVertexColors = function(g, c) {
-
-    g.faces.forEach(function(f) {
-
-      var n = (f instanceof THREE.Face3) ? 3 : 4;
-
-      for (var j = 0; j < n; j++) {
-
-        f.vertexColors[j] = c;
-
-      }
-
-    });
-
-  }
   this.addContributors();
   var drawnObject = new THREE.Mesh(this.geometry, defaultMaterial);
   scene.add(drawnObject);
@@ -146,14 +131,15 @@ World.prototype.pick = function() {
 World.prototype.addContributors = function() {
   //Create contributors. Location and such can be pulled in from firebase
   for (var i = 0; i < this.numContributors; i++) {
-    var contributor = new Contributor();
+    var options = {
+      isFriend : i % 2 === 0 ? true : false,
+      isSelf: i === 0 ? true : false
+    };
+    var contributor = new Contributor(options);
 
     var position = contributor.getPosition();
 
-    position.x = Math.random() * 10000 - 5000;
-    position.y = Math.random() * 6000 - 3000;
-    position.z = Math.random() * 8000 - 4000;
-
+  
     var rotation = new THREE.Vector3();
 
     rotation.x = Math.random() * 2 * Math.PI;
@@ -169,8 +155,7 @@ World.prototype.addContributors = function() {
     // give the geom's vertices a random color, to be displayed
 
     var geom = new THREE.CubeGeometry(1, 1, 1);
-    var color = new THREE.Color(0xff00ff << 16);
-    this.applyVertexColors(geom, color);
+    this.applyVertexColors(geom, contributor.color);
 
     var cube = new THREE.Mesh(geom);
     cube.position.copy(position);
@@ -198,6 +183,19 @@ World.prototype.addContributors = function() {
       scale: scale
     };
   }
+}
+
+World.prototype.applyVertexColors = function(geometry, color) {
+
+  geometry.faces.forEach(function(face) {
+
+    var numVertices = (face instanceof THREE.Face3) ? 3 : 4;
+
+    for (var j = 0; j < numVertices; j++) {
+      face.vertexColors[j] = color;
+    }
+  });
+
 }
 
 World.prototype.render = function() {
