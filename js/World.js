@@ -121,6 +121,7 @@ World.prototype.pick = function() {
       highlightBox.position.copy(data.position);
       highlightBox.rotation.copy(data.rotation);
       highlightBox.scale.copy(data.scale).add(offset);
+      console.log(data.position);
       highlightBox.visible = true;
     }
   } else {
@@ -132,25 +133,17 @@ World.prototype.addContributors = function() {
   //Create contributors. Location and such can be pulled in from firebase
   for (var i = 0; i < this.numContributors; i++) {
     var options = {
-      isFriend : i % 2 === 0 ? true : false,
+      isFriend : i!==0 && i % 2 === 0 ? true : false,
       isSelf: i === 0 ? true : false
     };
     var contributor = new Contributor(options);
 
-    var position = contributor.getPosition();
+    var position = contributor.position;
+    var rotation = contributor.rotation;
+    var scale = contributor.scale;
 
   
-    var rotation = new THREE.Vector3();
-
-    rotation.x = Math.random() * 2 * Math.PI;
-    rotation.y = Math.random() * 2 * Math.PI;
-    rotation.z = Math.random() * 2 * Math.PI;
-
-    var scale = new THREE.Vector3();
-
-    scale.x = Math.random() * 200 + 100;
-    scale.y = Math.random() * 200 + 100;
-    scale.z = Math.random() * 200 + 100;
+   
 
     // give the geom's vertices a random color, to be displayed
 
