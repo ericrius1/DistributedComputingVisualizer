@@ -1,6 +1,8 @@
 var JobBunch = function() {
   
-  group = new THREE.Object3D();
+  var group = new THREE.Object3D();
+  var particle;
+  scene.add(group);
   configureParticles();
 
   function configureParticles() {
@@ -10,8 +12,7 @@ var JobBunch = function() {
           // create a three.js particle
           
           var material = new THREE.ParticleCanvasMaterial( {  program: SPARKS.CanvasShadersUtils.circles, blending:THREE.AdditiveBlending } );
-          debugger;
-          material.color.setHSL(0.3, 1, 0.3); 
+          material.color.setRGB(1.0, 0.0, 1.0); 
           
           particle = new THREE.Particle( material );
           particle.scale.x = particle.scale.y = 4;
@@ -21,6 +22,7 @@ var JobBunch = function() {
           particle.position = p.position;
 
           // assign sparks.js target particle to three.js particle
+
           p.target = particle;
           
         };

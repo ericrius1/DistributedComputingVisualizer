@@ -2,7 +2,7 @@ var World = function() {
 
   pickingData = [],
   objects = [];
-  this.numContributors = 500;
+  this.numContributors = 0;
   ipMapper = new IpMapper();
 
   mouse = new THREE.Vector2();
@@ -27,7 +27,7 @@ World.prototype.initialize = function() {
   controls.dynamicDampingFactor = 0.3;
 
   scene = new THREE.Scene();
-  jobBunch = new JobBunch();
+
 
   pickingScene = new THREE.Scene();
   pickingTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
@@ -71,6 +71,10 @@ World.prototype.initialize = function() {
   });
   renderer.sortObjects = false;
   renderer.setSize(window.innerWidth, window.innerHeight);
+  
+
+//****JOB BUNCH***************
+  jobBunch = new JobBunch();
 
   container.appendChild(renderer.domElement);
 
@@ -197,4 +201,5 @@ World.prototype.render = function() {
   controls.update();
   this.pick();
   renderer.render(scene, camera);
+
 };
