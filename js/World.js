@@ -2,7 +2,8 @@ var World = function() {
 
   pickingData = [],
   objects = [];
-  this.numContributors = 50;
+  this.numContributors = 500;
+  ipMapper = new IpMapper();
 
   mouse = new THREE.Vector2();
   offset = new THREE.Vector3(10, 10, 10);
@@ -16,7 +17,6 @@ World.prototype.initialize = function() {
   camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100000);
 
 
-
   controls = new THREE.TrackballControls(camera);
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
@@ -27,6 +27,7 @@ World.prototype.initialize = function() {
   controls.dynamicDampingFactor = 0.3;
 
   scene = new THREE.Scene();
+  jobBunch = new JobBunch();
 
   pickingScene = new THREE.Scene();
   pickingTexture = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
@@ -86,9 +87,6 @@ World.prototype.onMouseMove = function(e) {
 
   mouse.x = e.clientX;
   mouse.y = e.clientY;
-  console.log("camer rotation", camera.rotation);
-
-
 }
 
 World.prototype.animate = function() {
