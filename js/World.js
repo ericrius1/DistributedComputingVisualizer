@@ -1,12 +1,9 @@
-var container, stats;
-var camera, controls, scene, renderer;
-var pickingData = [],
-  pickingTexture, pickingScene;
-var objects = [];
-var highlightBox;
+pickingData = [],
+objects = [];
 
-var mouse = new THREE.Vector2();
-var offset = new THREE.Vector3(10, 10, 10);
+
+mouse = new THREE.Vector2();
+offset = new THREE.Vector3(10, 10, 10);
 
 init();
 animate();
